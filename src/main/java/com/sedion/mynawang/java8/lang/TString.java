@@ -1,7 +1,7 @@
 package com.sedion.mynawang.java8.lang;
 
 /**
- * String源码阅读（JDK1.8）
+ * String源码阅读和使用（JDK1.8）
  * @auther mynawang
  * @create 2016-07-27 23:44
  */
