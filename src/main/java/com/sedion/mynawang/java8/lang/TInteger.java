@@ -16,8 +16,9 @@ import java.lang.annotation.Native;
  */
 public class TInteger {
 
-
     /**********************************属性***********************************/
+    // 1869997857
+    // 2147483647
     // 最小值为-（2的31次方），表示 int 类型能够表示的最小值 -2147483648
     @Native
     public static final int   MIN_VALUE = 0x80000000;
@@ -136,6 +137,5 @@ public class TInteger {
     }
 
     public static void main(String[] args) {
-        getMethod();
     }
 }
