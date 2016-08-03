@@ -8,6 +8,7 @@ package com.sedion.mynawang.java8.lang;
 
 
 /**
+ * 定义：
  * 所有java枚举类型都继承自该抽象类。enum声明枚举类型，不可以通过显式继承（entends）该抽象类的方式声明
  * 可序列化（实现可序列化）、在集合里直接使用sort(支持排序)
  */
