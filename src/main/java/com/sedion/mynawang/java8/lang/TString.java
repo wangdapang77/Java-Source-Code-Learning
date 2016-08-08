@@ -19,7 +19,7 @@ import java.nio.charset.Charset;
 public class TString {
 
     /**********************************属性***********************************/
-
+    
     // 字符数组，用于存储字符串内容
     private final char value[];
 
