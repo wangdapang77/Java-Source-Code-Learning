@@ -35,7 +35,7 @@ public class TEnum{
         // 获取名称
         System.out.println(programmer.ARCHITECT.name());
 
-        // 获取序列
+        // 获取在枚举中的序列顺序
         System.out.println(programmer.ARCHITECT.ordinal());
         System.out.println(programmer.PROJECTMANAGER.ordinal());
 

@@ -181,6 +181,10 @@ public class TString {
         String toLowerCaseVal = testStr4.toLowerCase();
         System.out.println("toLowerCaseVal: " + toLowerCaseVal);
 
+        String testConcat = testStr4.concat("--testConcat");
+        System.out.println("testConcat: " + testConcat);
+
+
     }
 
 

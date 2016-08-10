@@ -165,6 +165,10 @@ public class TBigDecimal {
         BigDecimal testNegate = test1.negate();
         System.out.println("testNegate: " + testNegate);
 
+        // 比较两个数的大小 大于为1 等于为1 小于为-1
+        int testCompare = test1.compareTo(test2);
+        System.out.println("testCompare: " + testCompare);
+
     }
 
 
