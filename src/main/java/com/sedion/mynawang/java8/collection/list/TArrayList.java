@@ -6,8 +6,7 @@ package com.sedion.mynawang.java8.collection.list;
  * @create 2016-08-10 16:42
  */
 
-import java.util.Arrays;
-import java.util.Collection;
+import java.util.*;
 
 /**
  * 定义：
@@ -114,6 +113,29 @@ public class TArrayList<E> {
         }
     }
 
+    public static void getConstructor() {
+        List<String> testArrayList = new ArrayList<String>(1);
+        List<String> testArrayList1 = new ArrayList<String>();
+        Collection testCon = new ArrayList<String>();
+        List<String> testArrayList2 = new ArrayList<String>(testCon);
+
+        System.out.println("testArrayList: " + testArrayList.hashCode());
+        System.out.println("testArrayList1: " + testArrayList1.hashCode());
+        System.out.println("testCon: " + testCon.hashCode());
+        System.out.println("testArrayList2: " + testArrayList2.hashCode());
+
+        testArrayList.add("testArrayList--test1");
+        testArrayList.add("testArrayList--test2");
+        System.out.println(testArrayList.toString());
+
+        testArrayList1.add("testArrayList1--test3");
+        testArrayList1.add("testArrayList1--test4");
+        System.out.println(testArrayList1.toString());
+
+        testArrayList2.add("testArrayList2--test5");
+        testArrayList2.add("testArrayList2--test6");
+        System.out.println(testArrayList2.toString());
+    }
 
     /**********************************常用方法***********************************/
 
@@ -169,7 +191,6 @@ public class TArrayList<E> {
         // 扩容长度还小于最小要求长度，则设置扩容长度等于最小要求长度
         if (newCapacity - minCapacity < 0)
             newCapacity = minCapacity;
-        //
         if (newCapacity - MAX_ARRAY_SIZE > 0)
             newCapacity = hugeCapacity(minCapacity);
         // minCapacity is usually close to size, so this is a win:
@@ -185,14 +206,83 @@ public class TArrayList<E> {
                 MAX_ARRAY_SIZE;
     }
 
+    /**
+     * Trims the capacity of this <tt>ArrayList</tt> instance to be the
+     * list's current size.  An application can use this operation to minimize
+     * the storage of an <tt>ArrayList</tt> instance.
+     *
+     * 更改list容量，释放空间，类似String.trim()功能
+     *
+     */
+    public void trimToSize() {
+        //modCount++;
+        if (size < elementData.length) {
 
+            /*elementData = (size == 0)
+                    ? EMPTY_ELEMENTDATA
+                    : Arrays.copyOf(elementData, size);*/
 
+            // 代码转化
+            if (0 == size) {
+                elementData = EMPTY_ELEMENTDATA;
+            } else {
+                elementData = Arrays.copyOf(elementData, size);
+            }
 
+        }
+    }
+
+    /**
+     * Returns the index of the first occurrence of the specified element
+     * in this list, or -1 if this list does not contain the element.
+     * More formally, returns the lowest index <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+     * or -1 if there is no such index.
+     *
+     * 检索某个元素所在的位置，从头开始检索
+     *
+     */
+    public int indexOf(Object o) {
+        if (o == null) {
+            for (int i = 0; i < size; i++)
+                if (elementData[i]==null)
+                    return i;
+        } else {
+            for (int i = 0; i < size; i++)
+                if (o.equals(elementData[i]))
+                    return i;
+        }
+        return -1;
+    }
+
+    /**
+     * Returns the index of the last occurrence of the specified element
+     * in this list, or -1 if this list does not contain the element.
+     * More formally, returns the highest index <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>,
+     * or -1 if there is no such index.
+     *
+     * 检索某个元素所在的位置，从尾开始检索
+     */
+    public int lastIndexOf(Object o) {
+        if (o == null) {
+            for (int i = size-1; i >= 0; i--)
+                if (elementData[i]==null)
+                    return i;
+        } else {
+            for (int i = size-1; i >= 0; i--)
+                if (o.equals(elementData[i]))
+                    return i;
+        }
+        return -1;
+    }
 
     /**
      * Removes the element at the specified position in this list.
      * Shifts any subsequent elements to the left (subtracts one from their
      * indices).
+     *
+     * 删除ArrayList内的指定位置的元素,返回删除的元素值
      *
      * @param index the index of the element to be removed
      * @return the element that was removed from the list
@@ -200,7 +290,6 @@ public class TArrayList<E> {
      */
     public E remove(int index) {
         /*rangeCheck(index);
-
         modCount++;*/
         E oldValue = elementData(index);
 
@@ -215,8 +304,226 @@ public class TArrayList<E> {
         return oldValue;
     }
 
+    /**
+     * Removes the first occurrence of the specified element from this list,
+     * if it is present.  If the list does not contain the element, it is
+     * unchanged.  More formally, removes the element with the lowest index
+     * <tt>i</tt> such that
+     * <tt>(o==null&nbsp;?&nbsp;get(i)==null&nbsp;:&nbsp;o.equals(get(i)))</tt>
+     * (if such an element exists).  Returns <tt>true</tt> if this list
+     * contained the specified element (or equivalently, if this list
+     * changed as a result of the call).
+     *
+     * 删除ArrayList内的指定元素（先超找元素位置，调用fastRemove）
+     *
+     * @param o element to be removed from this list, if present
+     * @return <tt>true</tt> if this list contained the specified element
+     */
+    public boolean remove(Object o) {
+        if (o == null) {
+            for (int index = 0; index < size; index++)
+                if (elementData[index] == null) {
+                    fastRemove(index);
+                    return true;
+                }
+        } else {
+            for (int index = 0; index < size; index++)
+                if (o.equals(elementData[index])) {
+                    fastRemove(index);
+                    return true;
+                }
+        }
+        return false;
+    }
+
+    /*
+     * Private remove method that skips bounds checking and does not
+     * return the value removed.
+     *
+     * 删除指定位置元素
+     *
+     */
+    private void fastRemove(int index) {
+        /*modCount++;*/
+        int numMoved = size - index - 1;
+        if (numMoved > 0)
+            // remove之后容量大于0则进行拷贝
+            // 源数组、源数组开始位置、目标数组、目标数组起始位置、要复制数组的数量
+            System.arraycopy(elementData, index+1, elementData, index,
+                    numMoved);
+        elementData[--size] = null; // clear to let GC do its work
+    }
+
     E elementData(int index) {
         return (E) elementData[index];
     }
+
+
+    /**
+     * Removes from this list all of the elements whose index is between
+     * {@code fromIndex}, inclusive, and {@code toIndex}, exclusive.
+     * Shifts any succeeding elements to the left (reduces their index).
+     * This call shortens the list by {@code (toIndex - fromIndex)} elements.
+     * (If {@code toIndex==fromIndex}, this operation has no effect.)
+     *
+     * 删除某两个索引范围内的元素
+     *
+     * @throws IndexOutOfBoundsException if {@code fromIndex} or
+     *         {@code toIndex} is out of range
+     *         ({@code fromIndex < 0 ||
+     *          fromIndex >= size() ||
+     *          toIndex > size() ||
+     *          toIndex < fromIndex})
+     */
+    protected void removeRange(int fromIndex, int toIndex) {
+        /*modCount++;*/
+        int numMoved = size - toIndex;
+        System.arraycopy(elementData, toIndex, elementData, fromIndex,
+                numMoved);
+
+        // clear to let GC do its work
+        int newSize = size - (toIndex-fromIndex);
+        for (int i = newSize; i < size; i++) {
+            elementData[i] = null;
+        }
+        size = newSize;
+    }
+
+
+
+    /**
+     * Removes from this list all of its elements that are contained in the
+     * specified collection.
+     *
+     * @param c collection containing elements to be removed from this list
+     * @return {@code true} if this list changed as a result of the call
+     * @throws ClassCastException if the class of an element of this list
+     *         is incompatible with the specified collection
+     * (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if this list contains a null element and the
+     *         specified collection does not permit null elements
+     * (<a href="Collection.html#optional-restrictions">optional</a>),
+     *         or if the specified collection is null
+     *
+     *  删除elementData中与指定集合c相同的元素，通过传值给batchRemove的complement来区分（false）
+     *
+     * @see Collection#contains(Object)
+     */
+    public boolean removeAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        return batchRemove(c, false);
+    }
+
+    /**
+     * Retains only the elements in this list that are contained in the
+     * specified collection.  In other words, removes from this list all
+     * of its elements that are not contained in the specified collection.
+     *
+     * @param c collection containing elements to be retained in this list
+     * @return {@code true} if this list changed as a result of the call
+     * @throws ClassCastException if the class of an element of this list
+     *         is incompatible with the specified collection
+     * (<a href="Collection.html#optional-restrictions">optional</a>)
+     * @throws NullPointerException if this list contains a null element and the
+     *         specified collection does not permit null elements
+     * (<a href="Collection.html#optional-restrictions">optional</a>),
+     *         or if the specified collection is null
+     *
+     *  保留elementData中与指定集合c相同的元素，删除其他元素，通过传值给batchRemove的complement来区分（true）
+     *
+     * @see Collection#contains(Object)
+     */
+    public boolean retainAll(Collection<?> c) {
+        Objects.requireNonNull(c);
+        return batchRemove(c, true);
+    }
+
+    private boolean batchRemove(Collection<?> c, boolean complement) {
+        final Object[] elementData = this.elementData;
+        int r = 0, w = 0;
+        boolean modified = false;
+        try {
+            for (; r < size; r++)
+                // 传true时保留元素，false时删除元素
+                if (c.contains(elementData[r]) == complement)
+                    elementData[w++] = elementData[r];
+        } finally {
+            // Preserve behavioral compatibility with AbstractCollection,
+            // even if c.contains() throws.
+            if (r != size) {
+                System.arraycopy(elementData, r,
+                        elementData, w,
+                        size - r);
+                w += size - r;
+            }
+            if (w != size) {
+                // clear to let GC do its work
+                for (int i = w; i < size; i++)
+                    elementData[i] = null;
+                // modCount += size - w;
+                size = w;
+                modified = true;
+            }
+        }
+        return modified;
+    }
+
+
+    public static void getMethod() {
+
+        ArrayList<String> trimArrayList = new ArrayList<String>(100);
+        trimArrayList.add("test1");
+        trimArrayList.add("test2");
+        // 减小ArrayList内数组elementData数组容量，释放内存
+        trimArrayList.trimToSize();
+
+        // 检索某个元素所在的位置，从头开始检索索引位置
+        int testIndexOf = trimArrayList.indexOf("test2");
+        System.out.println("testIndexOf: " + testIndexOf);
+
+        // 检索某个元素所在的位置，从头开始检索索引位置
+        int testLastIndexOf = trimArrayList.indexOf("test2");
+        System.out.println("testLastIndexOf: " + testLastIndexOf);
+
+        // 删除ArrayList内的指定元素, 返回结果
+        boolean testremoveFlag = trimArrayList.remove("test1");
+        System.out.println("testremoveFlag: " + testremoveFlag);
+
+        // 删除ArrayList内的指定位置的元素,返回删除的元素值
+        String testStrRemove = trimArrayList.remove(0);
+        System.out.println("testStrRemove: " + testStrRemove);
+
+        // 清空ArrayList
+        trimArrayList.clear();
+        System.out.println("trimArrayListClear: " + trimArrayList);
+
+
+        ArrayList<String> trimArrayList2 = new ArrayList<String>(100);
+        trimArrayList2.add("test1");
+        trimArrayList2.add("test2");
+        trimArrayList2.add("test3");
+
+        ArrayList<String> trimArrayList3 = new ArrayList<String>(100);
+        trimArrayList3.add("test1");
+
+        /*
+        // 移除相同元素
+        trimArrayList2.removeAll(trimArrayList3);
+        System.out.println("removeAllCollection: " + trimArrayList2);*/
+
+        // 保留相同元素，移除其他元素
+        trimArrayList2.retainAll(trimArrayList3);
+        System.out.println("retainAllCollection: " + trimArrayList2);
+    }
+
+
+    public static void main(String[] args) {
+        // getConstructor();
+        getMethod();
+    }
+
+
+
+
 
 }
