@@ -11,8 +11,9 @@ import java.util.*;
 /**
  * 定义：
  *  支持泛型，继承AbstractList，而AbstractList实现了List接口，提供List接口的默认实现
- *  ArrayList自身实现了List接口。同时ArrayList实现了Serializable接口，支持序列化，
- *  能够通过序列化传输。实现RandomAccess接口，支持快速随机访问，实际上是通过下标进行快速访问，
+ *  ArrayList自身实现了List接口。
+ *  同时ArrayList实现了Serializable接口，支持序列化，能够通过序列化传输。
+ *  实现RandomAccess接口，支持快速随机访问，实际上是通过下标进行快速访问，
  *  RandomAccess是一个标记接口，接口内没有定义任何内容，实现Cloneable接口能被克隆。
  */
 public class TArrayList<E> {
