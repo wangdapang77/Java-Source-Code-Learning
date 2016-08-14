@@ -1,8 +1,6 @@
 package com.sedion.mynawang.java8.collection.list;
 
-import java.util.Collection;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.*;
 
 /**
  * LinkedList源码阅读和使用（JDK1.8）
@@ -194,6 +192,303 @@ public class TLinkedList<E> {
             linkBefore(element, node(index));
     }
 
+    // 移除索引位置的元素
+    public E remove(int index) {
+        // checkElementIndex(index);
+        return unlink(node(index));
+    }
+
+    // 移除元素
+    public boolean remove(Object o) {
+        if (o == null) {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (x.item == null) {
+                    unlink(x);
+                    return true;
+                }
+            }
+        } else {
+            for (Node<E> x = first; x != null; x = x.next) {
+                if (o.equals(x.item)) {
+                    unlink(x);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
+    /**
+     * Returns the first element in this list.
+     * 返回第一个节点的元素
+     *
+     * @return the first element in this list
+     * @throws NoSuchElementException if this list is empty
+     */
+    public E getFirst() {
+        final Node<E> f = first;
+        if (f == null)
+            throw new NoSuchElementException();
+        return f.item;
+    }
+
+    /**
+     * Returns the last element in this list.
+     * 返回最后一个节点的元素
+     *
+     * @return the last element in this list
+     * @throws NoSuchElementException if this list is empty
+     */
+    public E getLast() {
+        final Node<E> l = last;
+        if (l == null)
+            throw new NoSuchElementException();
+        return l.item;
+    }
+
+    /**
+     * Removes and returns the first element from this list.
+     * 移除第一个节点的元素
+     *
+     * @return the first element from this list
+     * @throws NoSuchElementException if this list is empty
+     */
+    public E removeFirst() {
+        final Node<E> f = first;
+        if (f == null)
+            throw new NoSuchElementException();
+        return unlinkFirst(f);
+    }
+
+    /**
+     * Removes and returns the last element from this list.
+     * 移除最后一个节点的元素
+     *
+     * @return the last element from this list
+     * @throws NoSuchElementException if this list is empty
+     */
+    public E removeLast() {
+        final Node<E> l = last;
+        if (l == null)
+            throw new NoSuchElementException();
+        return unlinkLast(l);
+    }
+
+    /**
+     * Inserts the specified element at the beginning of this list.
+     * 加到LinkedList的第一个节点
+     *
+     * @param e the element to add
+     */
+    public void addFirst(E e) {
+        linkFirst(e);
+    }
+
+    /**
+     * Appends the specified element to the end of this list.
+     * 加到LinkedList的最后一个节点
+     *
+     * <p>This method is equivalent to {@link #add}.
+     *
+     * @param e the element to add
+     */
+    public void addLast(E e) {
+        linkLast(e);
+    }
+
+
+    /**
+     * Retrieves, but does not remove, the head (first element) of this list.
+     * 返回第一个节点元素
+     *
+     * @return the head of this list, or {@code null} if this list is empty
+     * @since 1.5
+     */
+    public E peek() {
+        final Node<E> f = first;
+        return (f == null) ? null : f.item;
+    }
+
+    /**
+     * Retrieves, but does not remove, the head (first element) of this list.
+     * 返回第一个节点的元素
+     *
+     * @return the head of this list
+     * @throws NoSuchElementException if this list is empty
+     * @since 1.5
+     */
+    public E element() {
+        return getFirst();
+    }
+
+    /**
+     * Adds the specified element as the tail (last element) of this list.
+     * 添加元素到LinkedList内（末端）
+     *
+     * @param e the element to add
+     * @return {@code true} (as specified by {@link Queue#offer})
+     * @since 1.5
+     */
+    public boolean offer(E e) {
+        return add(e);
+    }
+
+    /**
+     * Inserts the specified element at the front of this list.
+     * 添加元素到LinkedList开头
+     *
+     * @param e the element to insert
+     * @return {@code true} (as specified by {@link Deque#offerFirst})
+     * @since 1.6
+     */
+    public boolean offerFirst(E e) {
+        addFirst(e);
+        return true;
+    }
+
+    /**
+     * Inserts the specified element at the end of this list.
+     * 添加元素到LinkedList末端
+     *
+     * @param e the element to insert
+     * @return {@code true} (as specified by {@link Deque#offerLast})
+     * @since 1.6
+     */
+    public boolean offerLast(E e) {
+        addLast(e);
+        return true;
+    }
+
+    /**
+     * Retrieves, but does not remove, the first element of this list,
+     * or returns {@code null} if this list is empty.
+     * 返回LinkedList内第一个节点的元素
+     *
+     * @return the first element of this list, or {@code null}
+     *         if this list is empty
+     * @since 1.6
+     */
+    public E peekFirst() {
+        final Node<E> f = first;
+        return (f == null) ? null : f.item;
+    }
+
+    /**
+     * Retrieves, but does not remove, the last element of this list,
+     * or returns {@code null} if this list is empty.
+     * 返回LinkedList最后一个节点的元素
+     *
+     * @return the last element of this list, or {@code null}
+     *         if this list is empty
+     * @since 1.6
+     */
+    public E peekLast() {
+        final Node<E> l = last;
+        return (l == null) ? null : l.item;
+    }
+
+    /**
+     * Retrieves and removes the first element of this list,
+     * or returns {@code null} if this list is empty.
+     * 删除第一个节点的元素并且返回该元素
+     *
+     * @return the first element of this list, or {@code null} if
+     *     this list is empty
+     * @since 1.6
+     */
+    public E pollFirst() {
+        final Node<E> f = first;
+        return (f == null) ? null : unlinkFirst(f);
+    }
+
+    /**
+     * Retrieves and removes the last element of this list,
+     * or returns {@code null} if this list is empty.
+     * 删除最后一个节点的元素并且返回该元素
+     *
+     * @return the last element of this list, or {@code null} if
+     *     this list is empty
+     * @since 1.6
+     */
+    public E pollLast() {
+        final Node<E> l = last;
+        return (l == null) ? null : unlinkLast(l);
+    }
+
+    /**
+     * Pushes an element onto the stack represented by this list.  In other
+     * words, inserts the element at the front of this list.
+     * 加入到LinkedList的第一个节点（入栈）
+     *
+     * <p>This method is equivalent to {@link #addFirst}.
+     *
+     * @param e the element to push
+     * @since 1.6
+     */
+    public void push(E e) {
+        addFirst(e);
+    }
+
+    /**
+     * Pops an element from the stack represented by this list.  In other
+     * words, removes and returns the first element of this list.
+     * 移除LinkedList的第一个元素（出栈）
+     *
+     * <p>This method is equivalent to {@link #removeFirst()}.
+     *
+     * @return the element at the front of this list (which is the top
+     *         of the stack represented by this list)
+     * @throws NoSuchElementException if this list is empty
+     * @since 1.6
+     */
+    public E pop() {
+        return removeFirst();
+    }
+
+
+    /**
+     * Removes the first occurrence of the specified element in this
+     * list (when traversing the list from head to tail).  If the list
+     * does not contain the element, it is unchanged.
+     * 从第一个元素开始查询是否存在o元素并且删除
+     *
+     * @param o element to be removed from this list, if present
+     * @return {@code true} if the list contained the specified element
+     * @since 1.6
+     */
+    public boolean removeFirstOccurrence(Object o) {
+        return remove(o);
+    }
+
+    /**
+     * Removes the last occurrence of the specified element in this
+     * list (when traversing the list from head to tail).  If the list
+     * does not contain the element, it is unchanged.
+     * 从 最后一个元素开始查询是否存在o元素并且删除
+     *
+     * @param o element to be removed from this list, if present
+     * @return {@code true} if the list contained the specified element
+     * @since 1.6
+     */
+    public boolean removeLastOccurrence(Object o) {
+        if (o == null) {
+            for (Node<E> x = last; x != null; x = x.prev) {
+                if (x.item == null) {
+                    unlink(x);
+                    return true;
+                }
+            }
+        } else {
+            for (Node<E> x = last; x != null; x = x.prev) {
+                if (o.equals(x.item)) {
+                    unlink(x);
+                    return true;
+                }
+            }
+        }
+        return false;
+    }
+
     /**
      * Links e as first element.
      * 将元素加载LinkedList最前面
@@ -322,11 +617,80 @@ public class TLinkedList<E> {
     public static void getMethod() {
         LinkedList<String> testLinkedList = new LinkedList<String>();
         testLinkedList.add("test1");
+
+        String testRemoveE = testLinkedList.remove(0);
+        System.out.println("testRemoveE: " + testRemoveE);
+        boolean testRemoveFlag = testLinkedList.remove("test1");
+        System.out.println("testRemoveFlag: " + testRemoveFlag);
+
+        testLinkedList.add("test2");
+        testLinkedList.add("test3");
+        testLinkedList.add("test4");
+
+        String testGetFirstE = testLinkedList.getFirst();
+        System.out.println("testGetFirstE: " + testGetFirstE);
+        String testRemoveFirstE = testLinkedList.removeFirst();
+        System.out.println("testRemoveFirstE: " + testRemoveFirstE);
+        testLinkedList.addFirst("testAddFirst");
+        System.out.println("afterAddFirst: " + testLinkedList);
+
+
+        String testGetLastE = testLinkedList.getLast();
+        System.out.println("testGetLastE: " + testGetLastE);
+        String testRemoveLastE = testLinkedList.removeLast();
+        System.out.println("testRemoveLastE: " + testRemoveLastE);
+        testLinkedList.addLast("testAddLast");
+        System.out.println("afterAddLast: " + testLinkedList);
+
+
+        String testPeek = testLinkedList.peek();
+        System.out.println("testPeek: " + testPeek);
+        System.out.println(testLinkedList);
+        String testPeekFirst = testLinkedList.peekFirst();
+        String testPeekLast = testLinkedList.peekLast();
+        System.out.println("testPeekFirst: " + testPeekFirst);
+        System.out.println("testPeekLast: " + testPeekLast);
+
+
+        String testPoll = testLinkedList.poll();
+        System.out.println("testPoll: " + testPoll);
+        System.out.println("afterPoll: " + testLinkedList);
+
+        String testPollFirst = testLinkedList.pollFirst();
+        System.out.println("testPollFirst: " + testPollFirst);
+        System.out.println("afterPollFirst: " + testLinkedList);
+
+        String testPollLast = testLinkedList.pollLast();
+        System.out.println("testPollLast: " + testPollLast);
+        System.out.println("afterPollLast: " + testLinkedList);
+
+
+        testLinkedList.add("test5");
+        testLinkedList.add("test6");
+        testLinkedList.add("test7");
+
+
+        testLinkedList.push("testPush");
+        System.out.println("afterPush: " + testLinkedList);
+
+        String testPop = testLinkedList.pop();
+        System.out.println("testPop: " + testPop);
+        System.out.println("afterPop: " + testLinkedList);
+
+        testLinkedList.removeFirstOccurrence("test6");
+        System.out.println("afterRemoveFirstOccurrence: " + testLinkedList);
+
+        testLinkedList.removeLastOccurrence("test5");
+        System.out.println("afterRemoveLastOccurrence: " + testLinkedList);
+
     }
 
 
     public static void main(String[] args) {
         getConstructor();
+
+        getMethod();
+
     }
 
 
