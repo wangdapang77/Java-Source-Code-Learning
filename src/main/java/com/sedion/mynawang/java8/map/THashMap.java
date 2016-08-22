@@ -7,10 +7,7 @@ package com.sedion.mynawang.java8.map;
  */
 
 import javax.swing.tree.TreeNode;
-import java.util.HashMap;
-import java.util.Map;
-import java.util.Objects;
-import java.util.Set;
+import java.util.*;
 
 /**
  * 定义：
@@ -18,6 +15,8 @@ import java.util.Set;
  * HashMap自身实现了Map接口。Map本身定义了键值的映射关系
  * HashMap实现了Cloneable接口，可以被克隆。
  * HashMap实现了Serializable接口，支持序列化，能够通过序列化传输。
+ *
+ * http://tech.meituan.com/java-hashmap.html
  */
 public class THashMap<K,V>{
 
@@ -65,6 +64,7 @@ public class THashMap<K,V>{
      * The bin count threshold for untreeifying a (split) bin during a
      * resize operation. Should be less than TREEIFY_THRESHOLD, and at
      * most 6 to mesh with shrinkage detection under removal.
+     * 当桶(bucket)上的结点数小于这个值时树转链表
      */
     static final int UNTREEIFY_THRESHOLD = 6;
 
@@ -73,7 +73,7 @@ public class THashMap<K,V>{
      * (Otherwise the table is resized if too many nodes in a bin.)
      * Should be at least 4 * TREEIFY_THRESHOLD to avoid conflicts
      * between resizing and treeification thresholds.
-     *
+     * 决定是否转为TreeNode的最小容量
      *
      */
     static final int MIN_TREEIFY_CAPACITY = 64;
@@ -90,6 +90,7 @@ public class THashMap<K,V>{
     static class Node<K,V> implements Map.Entry<K,V> {
         // 用来定位数值索引位置
         final int hash;
+        //
         final K key;
         V value;
         // 链表的下一个Node
@@ -134,7 +135,7 @@ public class THashMap<K,V>{
      * necessary. When allocated, length is always a power of two.
      * (We also tolerate length zero in some operations to allow
      * bootstrapping mechanics that are currently not needed.)
-     * 初始化数组
+     * 初始化数组   存储元素的数组，总是2的幂次倍
      *
      */
     transient Node<K,V>[] table;
@@ -142,14 +143,14 @@ public class THashMap<K,V>{
     /**
      * Holds cached entrySet(). Note that AbstractMap fields are used
      * for keySet() and values().
-     * 缓存entrySet()
+     * 缓存entrySet() 存放具体元素的集
      *
      */
     transient Set<Map.Entry<K,V>> entrySet;
 
     /**
      * The number of key-value mappings contained in this map.
-     * HashMap的大小（HashMap中实际存在的键值对数量）
+     * HashMap的大小（HashMap中实际存在的键值对数量） 不等于数组的长度
      *
      */
     transient int size;
@@ -169,6 +170,7 @@ public class THashMap<K,V>{
      * The next size value at which to resize (capacity * load factor).
      * HashMap所能容纳的最大数据量的Node(键值对)个数 threshold = length * Load factor。
      * 也就是说，在数组定义好长度之后，负载因子越大，所能容纳的键值对个数越多。
+     * 临界值 当实际大小(容量*填充因子)超过临界值时，会进行扩容
      * @serial
      */
     // (The javadoc description is true upon serialization.
@@ -404,26 +406,40 @@ public class THashMap<K,V>{
     }
     */
 
+
+    /**
+     * 初始化或者是把table大小加倍，如果为空，则按threshold分配空间，否则，
+     * 加倍后，每个容器中的元素在新的table中要么呆在原索引处，要么有一个2的次幂的位移
+     * @return
+     */
     final Node<K,V>[] resize() {
+        // 当前table保存
         Node<K,V>[] oldTab = table;
+        // 保存table大小
         int oldCap = (oldTab == null) ? 0 : oldTab.length;
+        // 保存当前阈值（临界值）
         int oldThr = threshold;
         int newCap, newThr = 0;
+        // 之前table大小大于0
         if (oldCap > 0) {
+            // 超过最大值就不再扩充了，阈值为最大整形
             if (oldCap >= MAXIMUM_CAPACITY) {
                 threshold = Integer.MAX_VALUE;
                 return oldTab;
             }
+            // 没超过最大值，阈值就扩充为原来的2倍
             else if ((newCap = oldCap << 1) < MAXIMUM_CAPACITY &&
                     oldCap >= DEFAULT_INITIAL_CAPACITY)
                 newThr = oldThr << 1; // double threshold
         }
+        // 之前阈值大于0
         else if (oldThr > 0) // initial capacity was placed in threshold
             newCap = oldThr;
         else {               // zero initial threshold signifies using defaults
             newCap = DEFAULT_INITIAL_CAPACITY;
             newThr = (int)(DEFAULT_LOAD_FACTOR * DEFAULT_INITIAL_CAPACITY);
         }
+        // 计算新的resize上限
         if (newThr == 0) {
             float ft = (float)newCap * loadFactor;
             newThr = (newCap < MAXIMUM_CAPACITY && ft < (float)MAXIMUM_CAPACITY ?
@@ -431,9 +447,12 @@ public class THashMap<K,V>{
         }
         threshold = newThr;
         @SuppressWarnings({"rawtypes","unchecked"})
+        // 初始化table
         Node<K,V>[] newTab = (Node<K,V>[])new Node[newCap];
         table = newTab;
+        // 之前的table已经初始化过
         if (oldTab != null) {
+            // 把每个bucket都移动到新的buckets中
             for (int j = 0; j < oldCap; ++j) {
                 Node<K,V> e;
                 if ((e = oldTab[j]) != null) {
@@ -441,6 +460,7 @@ public class THashMap<K,V>{
                     if (e.next == null)
                         newTab[e.hash & (newCap - 1)] = e;
                     else if (e instanceof TreeNode) {
+                        // 红黑树分裂
                         //((TreeNode<K,V>)e).split(this, newTab, j, oldCap);
                     }else { // preserve order
                         Node<K,V> loHead = null, loTail = null;
@@ -448,6 +468,7 @@ public class THashMap<K,V>{
                         Node<K,V> next;
                         do {
                             next = e.next;
+                            // 原索引
                             if ((e.hash & oldCap) == 0) {
                                 if (loTail == null)
                                     loHead = e;
@@ -455,6 +476,7 @@ public class THashMap<K,V>{
                                     loTail.next = e;
                                 loTail = e;
                             }
+                            // 原索引+oldCap
                             else {
                                 if (hiTail == null)
                                     hiHead = e;
@@ -463,10 +485,12 @@ public class THashMap<K,V>{
                                 hiTail = e;
                             }
                         } while ((e = next) != null);
+                        // 原索引放到bucket里
                         if (loTail != null) {
                             loTail.next = null;
                             newTab[j] = loHead;
                         }
+                        // 原索引+oldCap放到bucket里
                         if (hiTail != null) {
                             hiTail.next = null;
                             newTab[j + oldCap] = hiHead;
@@ -600,14 +624,86 @@ public class THashMap<K,V>{
         return null;
     }
 
-
     public static void getMethod() {
+        Map<String, String> maptest = new HashMap<>();
+
+        // 映射中的键-值映射关系数
+        int mapSize = maptest.size();
+        System.out.println("mapSize: " + mapSize);
+
+        // 判断此map是否不包含键-值映射关系
+        boolean mapIsEmpty = maptest.isEmpty();
+        System.out.println("mapIsEmpty: " + mapIsEmpty);
+
+        // 放入值与键
+        maptest.put("testKey1", "testVal1");
+        System.out.println("maptest: " + maptest);
+
+        // 返回指定键所映射的值
+        String testVal1 = maptest.get("testKey1");
+        System.out.println("testVal1: " + testVal1);
+
+        // 判断map中是否包含指定键
+        boolean mapContainsKey = maptest.containsKey("testKey1");
+        System.out.println("mapContainsKey: " + mapContainsKey);
+
+        // 判断map中是否包含指定值
+        boolean mapContainsVlaue = maptest.containsValue("testVal1");
+        System.out.println("mapContainsVlaue: " + mapContainsVlaue);
+
+        // 移除指定键的映射关系
+        String mapRemove = maptest.remove(1); // "testKey1"
+        System.out.println("mapRomeve: " + mapRemove);
+
+        maptest.put("testKey2", "testVal2");
+        maptest.put("testKey3", "testVal3");
+        maptest.put("testKey4", "testVal4");
+        maptest.put("testKey5", "testVal5");
+        System.out.println("maptest: " + maptest);
+
+        // 得到map中的所有值
+        Collection<String> mapToCollection = maptest.values();
+        System.out.println("mapToCollection: " + mapToCollection);
+
+        // 得到map中的所有键值对
+        Set<Map.Entry<String,String>> mapToSet = maptest.entrySet();
+        System.out.println("mapToSet: " + mapToSet);
+
+        // 从此map中移除所有映射关系。此调用返回后，map将为空。
+        maptest.clear();
+        System.out.println("maptest: " + maptest);
+
+
+
+
+
 
     }
 
+    // threshold=2*0.75=1,就是说当put第二个key的时候，map就需要进行resize
+    private static HashMap<Integer,String> map = new HashMap<Integer,String>(2,0.75f);
+
+
     public static void main(String[] args) {
-        getConstructor();
-        getMethod();
+       // getConstructor();
+       // getMethod();
+
+
+        // 线程不安全demo
+        map.put(5,"C");
+        new Thread("Thread1") {
+            public void run() {
+                map.put(7, "B");
+                System.out.println(map);
+            }
+        }.start();
+        new Thread("Thread2") {
+            public void run() {
+                map.put(3,"A");
+                System.out.println(map);
+            }
+        }.start();
+
     }
 
 }
