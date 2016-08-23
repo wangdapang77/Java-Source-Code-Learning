@@ -17,8 +17,16 @@ import java.util.*;
  * HashMap实现了Serializable接口，支持序列化，能够通过序列化传输。
  *
  * http://tech.meituan.com/java-hashmap.html
+ *
+ * 1.键不可重复，值可重复
+ * 2.底层哈希表
+ * 3.线程不安全
+ * 4.允许key值为null，value也可以为null
+ *
  */
 public class THashMap<K,V>{
+
+    /**********************************属性***********************************/
 
     private static final long serialVersionUID = 362498820763181265L;
 
@@ -90,7 +98,6 @@ public class THashMap<K,V>{
     static class Node<K,V> implements Map.Entry<K,V> {
         // 用来定位数值索引位置
         final int hash;
-        //
         final K key;
         V value;
         // 链表的下一个Node
