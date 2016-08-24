@@ -7,9 +7,7 @@ package com.sedion.mynawang.java8.map;
  */
 
 
-import java.util.Hashtable;
-import java.util.Map;
-import java.util.Objects;
+import java.util.*;
 
 /**
  * 定义：
@@ -285,6 +283,7 @@ public class THashtable<K,V> {
         //如果容器中的元素数量已经达到阀值，则进行扩容操作
         if (count >= threshold) {
             // Rehash the table if the threshold is exceeded
+            //
             rehash();
             tab = table;
             hash = key.hashCode();
@@ -304,10 +303,14 @@ public class THashtable<K,V> {
      * efficiently.  This method is called automatically when the
      * number of keys in the hashtable exceeds this hashtable's capacity
      * and load factor.
+     * 调整hashtable的长度，变为原来的2倍+1
+     *
      */
     @SuppressWarnings("unchecked")
     protected void rehash() {
         int oldCapacity = table.length;
+
+        // 旧数组赋值给临时变量
         Entry<?,?>[] oldMap = table;
 
         // overflow-conscious code
@@ -318,12 +321,14 @@ public class THashtable<K,V> {
                 return;
             newCapacity = MAX_ARRAY_SIZE;
         }
+        // 创建新数组赋值给旧数组
         Entry<?,?>[] newMap = new Entry<?,?>[newCapacity];
 
         modCount++;
         threshold = (int)Math.min(newCapacity * loadFactor, MAX_ARRAY_SIZE + 1);
         table = newMap;
 
+        // 将旧数组内的元素依次添加到新数组中
         for (int i = oldCapacity ; i-- > 0 ;) {
             for (Entry<K,V> old = (Entry<K,V>)oldMap[i] ; old != null ; ) {
                 Entry<K,V> e = old;
@@ -336,43 +341,59 @@ public class THashtable<K,V> {
         }
     }
 
+    public static void getMethod() {
+        Map<String, String> tabletest = new Hashtable<>();
 
+        // 映射中的键-值映射关系数
+        int tableSize = tabletest.size();
+        System.out.println("tableSize: " + tableSize);
 
+        // 判断此table是否不包含键-值映射关系
+        boolean tableIsEmpty = tabletest.isEmpty();
+        System.out.println("tableIsEmpty: " + tableIsEmpty);
 
+        // 放入值与键
+        tabletest.put("testKey1", "testVal1");
+        System.out.println("tabletest: " + tabletest);
 
+        // 返回指定键所映射的值
+        String testVal1 = tabletest.get("testKey1");
+        System.out.println("testVal1: " + testVal1);
 
+        // 判断table中是否包含指定键
+        boolean mapContainsKey = tabletest.containsKey("testKey1");
+        System.out.println("mapContainsKey: " + mapContainsKey);
 
+        // 判断table中是否包含指定值
+        boolean mapContainsVlaue = tabletest.containsValue("testVal1");
+        System.out.println("mapContainsVlaue: " + mapContainsVlaue);
 
+        // 移除指定键的映射关系
+        String mapRemove = tabletest.remove(1); // "testKey1"
+        System.out.println("mapRomeve: " + mapRemove);
 
+        tabletest.put("testKey2", "testVal2");
+        tabletest.put("testKey3", "testVal3");
+        tabletest.put("testKey4", "testVal4");
+        tabletest.put("testKey5", "testVal5");
+        System.out.println("tabletest: " + tabletest);
 
+        // 得到table中的所有值
+        Collection<String> tableToCollection = tabletest.values();
+        System.out.println("tableToCollection: " + tableToCollection);
 
+        // 得到table中的所有键值对
+        Set<Map.Entry<String,String>> tableToSet = tabletest.entrySet();
+        System.out.println("tableToSet: " + tableToSet);
 
+        // 从此table中移除所有映射关系。此调用返回后，table将为空。
+        tabletest.clear();
+        System.out.println("tabletest: " + tabletest);
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-    public static void main(String[] args) {
-        getConstructor();
     }
 
-
-
-
-
-
-
-
+    public static void main(String[] args) {
+        // getConstructor();
+        getMethod();
+    }
 }
