@@ -11,15 +11,15 @@ import java.util.*;
 /**
  * 定义：
  * LinkedList继承了抽象类AbstractSequentialList,而AbstractSequentialList继承了AbstractList，
- * AbstractList实现了List接口，提供List接口的默认实现。
+ * LinkedList实现了List接口，提供List接口的默认实现。
  * LinkedList实现了Serializable接口，可以被序列化，能通过序列化传输。
  * LinkedList实现了Cloneable接口，可以被克隆。
  * LinkedList实现了Deque接口，Deque是双端队列(也就是既可以先入先出，又可以先入后出)接口，
  * 提供了类似push(入栈)、pop(出栈)和peek(查看栈顶元素)等适用于栈和队列的方法
  *
  */
-public class TLinkedList<E> {
-
+public class TLinkedList<E> //extends AbstractSequentialList<E> implements List<E>, Deque<E>, Cloneable, java.io.Serializable
+{
     /**********************************属性***********************************/
     // 节点个数
     transient int size = 0;

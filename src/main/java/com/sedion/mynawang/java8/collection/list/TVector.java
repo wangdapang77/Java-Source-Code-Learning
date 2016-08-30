@@ -6,22 +6,19 @@ package com.sedion.mynawang.java8.collection.list;
  * @create 2016-08-15 9:25
  */
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.Collection;
-import java.util.Vector;
+import java.util.*;
 
 /**
  * 定义：
- *  支持泛型，继承AbstractList，而AbstractList实现了List接口，提供List接口的默认实现
+ *  Vector支持泛型，继承AbstractList，而AbstractList实现了List接口，提供List接口的默认实现
  *  ArrayList自身实现了List接口。
- *  ArrayList实现了Cloneable接口，可以被克隆。
- *  ArrayList实现了Serializable接口，支持序列化，能够通过序列化传输。
  *  ArrayList实现RandomAccess接口，支持快速随机访问，实际上是通过下标进行快速访问，
  *  RandomAccess是一个标记接口，接口内没有定义任何内容，实现Cloneable接口能被克隆。
+ *  ArrayList实现了Cloneable接口，可以被克隆。
+ *  ArrayList实现了Serializable接口，支持序列化，能够通过序列化传输。
  */
-public class TVector<E> {
-
+public class TVector<E> //extends AbstractList<E> implements List<E>, RandomAccess, Cloneable, java.io.Serializable
+{
     /**********************************属性***********************************/
     // 保存数据的数组
     protected Object[] elementData;

@@ -16,9 +16,8 @@ import java.util.*;
  * HashSet实现了Cloneable接口，可以被克隆。
  * HashSet实现了Serializable接口，支持序列化，能够通过序列化传输。
  */
-public class THashSet<E> {
-
-
+public class THashSet<E> //extends AbstractSet<E> implements Set<E>, Cloneable, java.io.Serializable
+{
     /**********************************属性***********************************/
 
     static final long serialVersionUID = -5024744406713321676L;

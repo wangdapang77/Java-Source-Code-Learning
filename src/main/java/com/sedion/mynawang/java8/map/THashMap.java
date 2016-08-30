@@ -11,7 +11,7 @@ import java.util.*;
 
 /**
  * 定义：
- * HashMap实现了Map接口，继承AbstractMap，而AbstractMap本身实现了Map接口，提供Map的默认实现。
+ * HashMap继承AbstractMap，而AbstractMap本身实现了Map接口，提供Map的默认实现。
  * HashMap自身实现了Map接口。Map本身定义了键值的映射关系
  * HashMap实现了Cloneable接口，可以被克隆。
  * HashMap实现了Serializable接口，支持序列化，能够通过序列化传输。
@@ -24,8 +24,8 @@ import java.util.*;
  * 4.允许key值为null，value也可以为null
  *
  */
-public class THashMap<K,V>{
-
+public class THashMap<K,V> //extends AbstractMap<K,V> implements Map<K,V>, Cloneable, Serializable
+{
     /**********************************属性***********************************/
 
     private static final long serialVersionUID = 362498820763181265L;
