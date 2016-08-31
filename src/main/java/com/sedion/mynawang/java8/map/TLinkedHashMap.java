@@ -6,8 +6,7 @@ package com.sedion.mynawang.java8.map;
  * @create 2016-08-30 17:21
  */
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.*;
 
 /**
  * 定义：
@@ -18,8 +17,6 @@ import java.util.Map;
  */
 public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
 {
-
-
     /**
      * HashMap.Node subclass for normal LinkedHashMap entries.
      * Entry<K,V>继承自THashMap.Node<K,V>，而THashMap.Node<K,V>继承自Map.Entry<K,V>
@@ -58,8 +55,6 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
      */
     final boolean accessOrder;
 
-
-
     /**
      * Constructs an empty insertion-ordered <tt>LinkedHashMap</tt> instance
      * with the specified initial capacity and load factor.
@@ -68,6 +63,8 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
      * @param  loadFactor      the load factor
      * @throws IllegalArgumentException if the initial capacity is negative
      *         or the load factor is nonpositive
+     * 初始化一个空的LinkedHashMap，并使用默认初始容量为16和加载因子0.75。
+     *
      */
     public TLinkedHashMap(int initialCapacity, float loadFactor) {
         super(initialCapacity, loadFactor);
@@ -80,6 +77,8 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
      *
      * @param  initialCapacity the initial capacity
      * @throws IllegalArgumentException if the initial capacity is negative
+     * 构造一个新的空LinkedHashMap，其底层 HashMap 实例具有指定的初始容量和默认的加载因子（0.75）。
+     *
      */
     public TLinkedHashMap(int initialCapacity) {
         super(initialCapacity);
@@ -89,6 +88,8 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
     /**
      * Constructs an empty insertion-ordered <tt>LinkedHashMap</tt> instance
      * with the default initial capacity (16) and load factor (0.75).
+     * 默认构造函数
+     * 初始化一个空的HashMap，并使用默认初始容量为16和加载因子0.75。
      */
     public TLinkedHashMap() {
         super();
@@ -103,6 +104,8 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
      *
      * @param  m the map whose mappings are to be placed in this map
      * @throws NullPointerException if the specified map is null
+     *
+     * 构造一个包含指定 Map 中的元素的新 LinkedHashMap。
      */
     public TLinkedHashMap(Map<? extends K, ? extends V> m) {
         super();
@@ -120,6 +123,8 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
      *         access-order, <tt>false</tt> for insertion-order
      * @throws IllegalArgumentException if the initial capacity is negative
      *         or the load factor is nonpositive
+     * 以指定的initialCapacity和loadFactor构造一个新的空链接哈希集合
+     *
      */
     public TLinkedHashMap(int initialCapacity,
                          float loadFactor,
@@ -127,5 +132,25 @@ public class TLinkedHashMap<K,V> extends HashMap<K,V>//  implements Map<K,V>
         super(initialCapacity, loadFactor);
         this.accessOrder = accessOrder;
     }
+
+    public static void getConstructor() {
+        LinkedHashMap<Object, Object> testLinkedHashMap = new LinkedHashMap<>();
+        System.out.println("testLinkedHashMap: " + testLinkedHashMap);
+        LinkedHashMap<Object, Object> testLinkedHashMap1 = new LinkedHashMap<>(10, 0.75F);
+        System.out.println("testLinkedHashMap1: " + testLinkedHashMap1);
+        Map<Object, Object> testMap = new HashMap<Object, Object>();
+        LinkedHashMap<Object, Object> testLinkedHashMap2 = new LinkedHashMap<Object, Object>(testMap);
+        System.out.println("testLinkedHashMap2: " + testLinkedHashMap2);
+    }
+
+
+
+
+
+
+    public static void main(String[] args) {
+        getConstructor();
+    }
+
 
 }
