@@ -23,7 +23,7 @@ com.sedion.mynawang.java8/（Java8下的源码）
 │   │   ├── THashSet
 │   │   ├── TLinkedHashSet
 │   │   └── TTreeSet
-│   └──  TQueue
+│   └── TQueue
 ├── map/
 │   ├── TConcurrentHashMap
 │   ├── THashMap
