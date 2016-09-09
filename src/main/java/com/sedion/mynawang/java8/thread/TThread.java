@@ -509,12 +509,12 @@ public class TThread implements Runnable{
      *
      * <p>The priority of the newly created thread is set equal to the
      * priority of the thread creating it, that is, the currently running
-     * thread. The method {@linkplain #setPriority setPriority} may be
+     * thread. The method {@linkplain # setPriority} may be
      * used to change the priority to a new value.
      *
      * <p>The newly created thread is initially marked as being a daemon
      * thread if and only if the thread creating it is currently marked
-     * as a daemon thread. The method {@linkplain #setDaemon setDaemon}
+     * as a daemon thread. The method {@linkplain # setDaemon}
      * may be used to change whether or not a thread is a daemon.
      *
      * @param  group
@@ -622,12 +622,170 @@ public class TThread implements Runnable{
         init(group, target, name, stackSize);
     }
 
+    static class MyThread implements Runnable {
+        @Override
+        public void run() {
+
+        }
+    }
+
+    public static void getConstructor() {
+        ThreadGroup group = new ThreadGroup("test");
+        // 默认构造方式
+        Thread thread = new Thread();
+        Thread thread1 = new Thread(new MyThread());
+        Thread thread2 = new Thread(group, new MyThread());
+        Thread thread3 = new Thread("test-Thread1");
+        Thread thread4 = new Thread(group, "test-Thread2");
+        Thread thread5 = new Thread(new MyThread(), "test-Thread3");
+        Thread thread6 = new Thread(group, new MyThread(), "test-Thread4");
+        Thread thread7 = new Thread(group, new MyThread(), "test-Thread5", 6);
+    }
 
 
 
+    /**********************************常用方法***********************************/
 
+
+
+    /**
+     * Causes this thread to begin execution; the Java Virtual Machine
+     * calls the <code>run</code> method of this thread.
+     * <p>
+     * The result is that two threads are running concurrently: the
+     * current thread (which returns from the call to the
+     * <code>start</code> method) and the other thread (which executes its
+     * <code>run</code> method).
+     * <p>
+     * It is never legal to start a thread more than once.
+     * In particular, a thread may not be restarted once it has completed
+     * execution.
+     *
+     * @exception  IllegalThreadStateException  if the thread was already
+     *               started.
+     * @see        #run()
+     * @see        #//stop()
+     */
+    public synchronized void start() {
+        /**
+         * This method is not invoked for the main method thread or "system"
+         * group threads created/set up by the VM. Any new functionality added
+         * to this method in the future may have to also be added to the VM.
+         *
+         * A zero status value corresponds to state "NEW".
+         *
+         * 线程状态为0说明线程刚初始化，还未运行
+         */
+        if (threadStatus != 0)
+            throw new IllegalThreadStateException();
+
+        /* Notify the group that this thread is about to be started
+         * so that it can be added to the group's list of threads
+         * and the group's unstarted count can be decremented. */
+        // 将这个即将运行的线程加入线程组中
+       // group.add(this);
+
+        boolean started = false;
+        try {
+            start0();
+            started = true;
+        } finally {
+            try {
+                if (!started) {
+                    // 如果失败则在线程组中去除这个线程
+                   // group.threadStartFailed(this);
+                }
+            } catch (Throwable ignore) {
+                /* do nothing. If start0 threw a Throwable then
+                  it will be passed up the call stack */
+            }
+        }
+    }
+    // 线程启动的本地方法
+    private native void start0();
+
+
+    // 运行线程
     @Override
     public void run() {
-
+        if (target != null) {
+            target.run();
+        }
     }
+
+    // 在线程真正退出前系统对线程进行清理
+    private void exit() {
+        if (group != null) {
+            // 线程退出，在相应的线程组中做移除等操作
+            // group.threadTerminated(this);
+            group = null;
+        }
+        /* Aggressively null out all reference fields: see bug 4006245 */
+        target = null;
+        /* Speed the release of some of these resources */
+        /*threadLocals = null;
+        inheritableThreadLocals = null;
+        inheritedAccessControlContext = null;
+        blocker = null;
+        uncaughtExceptionHandler = null;*/
+    }
+
+
+
+    @Deprecated
+    public final void stop() {
+        SecurityManager security = System.getSecurityManager();
+        if (security != null) {
+            // 确认当前运行的线程是否有权限修改
+            // checkAccess();
+
+            // 如果当前线程不是现在的线程
+            /*if (this != Thread.currentThread()) {
+                security.checkPermission(SecurityConstants.STOP_THREAD_PERMISSION);
+            }*/
+        }
+
+        // 如果线程状态是NEW则不执行
+        if (threadStatus != 0) {
+            //resume();
+        }
+
+        // The VM can handle all thread states
+        // 虚拟机可以处理所有线程的状态
+        stop0(new ThreadDeath());
+    }
+
+    /**
+     * Throws {@code UnsupportedOperationException}.
+     *
+     * @param obj ignored
+     *
+     * @deprecated This method was originally designed to force a thread to stop
+     *        and throw a given {@code Throwable} as an exception. It was
+     *        inherently unsafe (see {@link #stop()} for details), and furthermore
+     *        could be used to generate exceptions that the target thread was
+     *        not prepared to handle.
+     *        For more information, see
+     *        <a href="{@docRoot}/../technotes/guides/concurrency/threadPrimitiveDeprecation.html">Why
+     *        are Thread.stop, Thread.suspend and Thread.resume Deprecated?</a>.
+     */
+    @Deprecated
+    public final synchronized void stop(Throwable obj) {
+        throw new UnsupportedOperationException();
+    }
+
+
+    // 相应的Thread方法，请进如下关于多线程学习的网址查看
+    // https://github.com/mynawang/Java-Multi-Thread-Learning
+
+
+
+    /* Some private helper methods【本地方法】 */
+    private native void setPriority0(int newPriority);
+    private native void stop0(Object o);
+    private native void suspend0();
+    private native void resume0();
+    private native void interrupt0();
+    private native void setNativeName(String name);
+
 }
