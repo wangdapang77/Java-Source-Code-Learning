@@ -278,7 +278,7 @@ public class THashtable<K,V> {
         modCount++;
 
         Entry<?,?> tab[] = table;
-        //如果容器中的元素数量已经达到阀值，则进行扩容操作
+        // 如果容器中的元素数量已经达到阀值，则进行扩容操作
         if (count >= threshold) {
             // Rehash the table if the threshold is exceeded
             //

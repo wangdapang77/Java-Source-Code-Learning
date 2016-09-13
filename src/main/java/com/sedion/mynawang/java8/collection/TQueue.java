@@ -11,6 +11,4 @@ package com.sedion.mynawang.java8.collection;
  * 基本上，一个队列就是一个先入先出（FIFO）的数据结构
  */
 public class TQueue {
-
-
 }
