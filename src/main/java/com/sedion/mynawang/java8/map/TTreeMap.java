@@ -16,7 +16,10 @@ import java.util.*;
  * TreeMap 实现了Cloneable接口，意味着它能被克隆。
  * TreeMap 实现了java.io.Serializable接口，意味着它支持序列化。
  */
-public class TTreeMap<K,V> {
+public class TTreeMap<K,V> { //extends AbstractMap<K,V> implements NavigableMap<K,V>, Cloneable, java.io.Serializable
+
+    /**********************************属性***********************************/
+
     /**
      * The comparator used to maintain order in this tree map, or
      * null if it uses the natural ordering of its keys.

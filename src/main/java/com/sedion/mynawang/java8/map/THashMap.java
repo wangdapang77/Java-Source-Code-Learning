@@ -711,7 +711,6 @@ public class THashMap<K,V> //extends AbstractMap<K,V> implements Map<K,V>, Clone
                 System.out.println(map);
             }
         }.start();
-
     }
 
 }
