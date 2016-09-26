@@ -176,6 +176,11 @@ public class TEnumMap<K extends Enum<K>, V> { //extends AbstractMap<K, V> implem
     }
 
 
+    /**********************************常用方法***********************************/
+
+
+
+
     public static void main(String[] args) {
         getConstructor();
     }
