@@ -23,7 +23,6 @@ import java.util.Map;
  * 5.Iterator没有ConcurrentModificationException保护，出现并发问题不容易发现，如数组越界不抛异常
  */
 public class TEnumMap<K extends Enum<K>, V> { //extends AbstractMap<K, V> implements java.io.Serializable, Cloneable
-
     /**********************************属性***********************************/
 
     /**

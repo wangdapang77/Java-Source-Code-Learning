@@ -1,4 +1,4 @@
-package com.sedion.mynawang.java8.map;
+package com.sedion.mynawang.java8.concurrent;
 
 /**
  * @auther mynawang
