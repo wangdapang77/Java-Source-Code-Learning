@@ -62,7 +62,7 @@ public class TFilterInputStream extends InputStream{
 
     public synchronized void reset() throws IOException {
         in.reset();
-    }
+}
 
     public boolean markSupported() {
         return in.markSupported();
